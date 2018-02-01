@@ -1,0 +1,23 @@
+{% extends "bootstrap/base.html"%}
+
+<html>
+
+
+<head><h1>Welcome to Contridata</h1></head>
+
+
+{% block content %}
+<body>
+<form action="{{ url_for('result') }}" method ="POST">
+
+  <p><h4>Enter a stock ticker to retrieve the moving day averages</h4><p>
+  <input type='text' name='ticker'>
+  <input type='submit' value='submit'>
+
+</form>
+
+
+{% endblock %}
+
+
+</html>

@@ -1,0 +1,50 @@
+{% extends "bootstrap/base.html"%}
+
+<html>
+
+<head><h1>Welcome to Contridata</h1></head>
+
+
+{% block content %}
+<body>
+<div class="container-fluid">
+<h4>The current adjusted day stock price for the ticker {{ stockn }} is ${{ stockp }}</h4>
+</div>
+
+<div class="container-fluid">
+<h4> The moving day averages for {{ stockn }} are listed below</h4>
+</div>
+
+<div class="container-fluid">
+<table class="table table-bordered table-hover table-sm">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Period</th>
+      <th scope="col">MDA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>100 day</td>
+      <td>${{ma100}}</td>
+    </tr>
+    <tr>
+      <td>50 day</td>
+      <td>${{ma50}}</td>
+    </tr>
+    <tr>
+      <td>20 day</td>
+      <td>${{ma20}}</td>
+    </tr>
+    <tr>
+      <td>10 day</td>
+      <td>${{ma10}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</body>
+{% endblock %}
+
+</html>
