@@ -1,4 +1,4 @@
-"""A simple app that returns the daily moving average of a stock. """"
+"""A simple app that returns the daily moving average of a stock. """
 
 
 from flask import Flask, render_template, request, url_for, redirect
@@ -6,9 +6,14 @@ from flask_bootstrap import Bootstrap
 import pandas as pd
 import datetime
 import pandas_datareader.data as web
+import traceback
 
 app = Flask(__name__)
 Bootstrap(app)
+
+
+#Create a global dictionary to store the tickers
+app.vars= {}
 
 @app.route('/')
 def start():
@@ -16,22 +21,27 @@ def start():
 
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    if request.method == 'GET':
+        return render_template('index.html')
+    else:
+        return redirect('/result')
 
-@app.route('/result', methods=['POST', 'GET'])
+@app.route('/result', methods=['GET','POST'])
 def result():
+        #We are going to try and get the stock data
+        # Request is a POST
 
-    if request.method == 'POST':
+        app.vars['ticker'] = request.form['ticker'].upper()
 
         start = datetime.datetime(2016, 1, 1)
-        end = datetime.datetime.today().strftime('%y-%m-%d')
+        #end = datetime.datetime(2018, 1, 1)
+        end = datetime.datetime.now()
+        #end = datetime.datetime.today().strftime('%y-%m-%d')
 
-        #stock = input("Enter the name of the stock\n")
-        stock = request.form['ticker'].upper()
+        symbol = 'WIKI/'+ app.vars['ticker']
 
-        symbol = 'WIKI/'+stock.upper()
-
-        df = web.DataReader(symbol, 'quandl', start, end)
+        if not symbol == '':
+            df = web.DataReader(symbol, 'quandl', start, end)
 
         stockp = df.head(1)['AdjClose'].iloc[0]
 
@@ -42,15 +52,21 @@ def result():
         ma20 = int(ma.rolling(window=20).mean().tail().iloc[4])
         ma10 = int(ma.rolling(window=10).mean().tail().iloc[4])
 
-    else:
-        print("It is not a GET")
-
-    return render_template('result.html',  stockn = stock, stockp = stockp,
+        return render_template('result.html',  stockn = app.vars['ticker'], stockp = stockp,
         ma100=ma100, ma50=ma50, ma20=ma20, ma10= ma10)
+
+
+# @app.errorhandler(500)
+# def error_handler(e):
+#     return render_template("error.html")
+
+# @app.errorhandler(404)
+# def error_handler(e):
+#     return render_template("error.html")
 
 
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
